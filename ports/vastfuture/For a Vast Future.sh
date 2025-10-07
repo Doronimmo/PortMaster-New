@@ -31,31 +31,19 @@ $ESUDO chmod +x "$GAMEDIR/gmloadernext.aarch64"
 
 # Check if the patching needs to be applied
 check_patch() {
-	if [ ! -f "$GAMEDIR/patchlog.txt" ] && [ -f "$GAMEDIR/assets/data.win" ]; then
-		if [ -f "$controlfolder/utils/patcher.txt" ]; then
-			set -o pipefail
-			
-			# Setup mono environment variables
-			DOTNETDIR="$HOME/mono"
-			DOTNETFILE="$controlfolder/libs/dotnet-8.0.12.squashfs"
-			$ESUDO mkdir -p "$DOTNETDIR"
-			$ESUDO umount "$DOTNETFILE" || true
-			$ESUDO mount "$DOTNETFILE" "$DOTNETDIR"
-			export PATH="$DOTNETDIR":"$PATH"
-			
-			# Setup and execute the Portmaster Patcher utility with our patch file
-			export ESUDO
-			export DEVICE_RAM
-			export PATCHER_FILE="$GAMEDIR/tools/patchscript"
-			export PATCHER_GAME="$(basename "${0%.*}")"
-			export PATCHER_TIME="5 minutes"
-			source "$controlfolder/utils/patcher.txt"
-			$ESUDO umount "$DOTNETDIR"
-		else
-			pm_message "This port requires the latest version of PortMaster."
-			pm_finish
-			exit 1
-		fi
+# Check if we need to patch the game
+if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/data.win" ]; then
+	    if [ -f "$controlfolder/utils/patcher.txt" ]; then
+	        export PATCHER_FILE="$GAMEDIR/tools/patchscript"
+	        export PATCHER_GAME="$(basename "${0%.*}")"
+	        export PATCHER_TIME="2 to 5 minutes"
+	        export controlfolder
+	        export ESUDO
+	        source "$controlfolder/utils/patcher.txt"
+	        $ESUDO kill -9 $(pidof gptokeyb)
+	    else
+	        echo "This port requires the latest version of PortMaster."
+	    fi
 	fi
 }
 
