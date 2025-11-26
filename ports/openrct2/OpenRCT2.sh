@@ -57,7 +57,7 @@ if [ -f "$GAMEDIR/engine.zip" ]; then
 fi
 
 # Run the game
-pm_message "Starting game."
+echo "Starting game."
 $GPTOKEYB "openrct2" -c openrct2.gptk &
 pm_platform_helper "$GAMEDIR/openrct2"
 $TASKSET ./openrct2 $ARGS
