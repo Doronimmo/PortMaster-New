@@ -37,8 +37,6 @@ if [ ! -f "TR0.BPA" ]; then
   exit
 fi
 
-pm_message "Starting game."
-
 $GPTOKEYB "drally_linux" -c drally.gptk textinput &
 pm_platform_helper "$GAMEDIR/drally_linux"
 ./drally_linux
